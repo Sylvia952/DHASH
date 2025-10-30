@@ -27,9 +27,20 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
-dependencies:
+#dependencies:
   flutter:
-    sdk: flutter
+   # sdk: flutter
+    name: dhash_api_dart
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+dependencies:
+  shelf: ^1.4.1
+  shelf_router: ^1.1.0
+  mysql_client: ^0.1.0-dev.14 # Nouveau : Pour la connexion MySQL
+  jaguar_jwt: ^3.0.0
+  bcrypt: ^2.1.2
+  dotenv: ^4.2.0
+  uuid: ^4.3.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
