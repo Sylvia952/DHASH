@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/login_screen.dart';
-import 'screens/home_screen.dart'; // Écran d'accueil après connexion
+import '../../lib/screens/home_screen.dart'; // Écran d'accueil après connexion
 
 void main() {
   // Assure que les Widgets sont initialisés avant de lancer l'application

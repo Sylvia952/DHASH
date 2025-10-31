@@ -1,0 +1,28 @@
+name: dhash_backend  # <--- Le nom de votre package est ici !
+description: API REST DHASH avec Dart/Shelf et MySQL.
+version: 1.0.0
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  # Base de Données
+  mysql_client: ^0.0.27
+  
+  # Serveur et Routage
+  shelf: ^1.4.1        
+  shelf_router: ^1.1.0    
+  
+  # Configuration et Sécurité
+  dotenv: ^4.2.0          
+  jaguar_jwt: ^3.0.0      
+
+
+  argon2: any       # <--- L'indentation est maintenant correcte (2 espaces)
+
+
+  uuid: ^4.3.3
+
+dev_dependencies:
+  lints: ^3.0.0 
+  test: ^1.24.0

@@ -1,11 +1,17 @@
-// Code simplifié : vous devrez intégrer JWT et bcrypt (comme prévu)
+// dhash_backend/lib/services/auth_service.dart
 
-import 'package:bcrypt/bcrypt.dart';
-import 'package:dhash_api_dart/config/db_connection.dart';
-import 'package:dhash_api_dart/models/user.dart';
+import 'package:argon2/argon2.dart'; 
+// ANCIEN : import 'package:dhash_api_dart/config/db_connection.dart';
+import 'package:dhash_backend/config/db_connection.dart'; // ✅ CORRIGÉ
+// ANCIEN : import 'package:dhash_api_dart/models/user.dart';
+import 'package:dhash_backend/models/user.dart'; // ✅ CORRIGÉ
 import 'package:jaguar_jwt/jaguar_jwt.dart';
 
+
 class AuthService {
+  // Initialisation du Hasher Argon2 une seule fois
+  final _argon2Hasher = Argon2Hasher();
+
   // Méthode pour l'inscription d'un nouvel utilisateur
   Future<Map<String, dynamic>> registerUser(
       String email, String password, String photoUrl) async {
@@ -21,8 +27,8 @@ class AuthService {
       throw 'L\'utilisateur avec cet email existe déjà.';
     }
 
-    // 2. Hacher le mot de passe
-    final passwordHash = bcrypt.hashSync(password, bcrypt.gensalt());
+    // 2. Hacher le mot de passe avec Argon2
+    final passwordHash = _argon2Hasher.hash(password); 
 
     // 3. Insérer l'utilisateur
     final insertResult = await conn.execute(
@@ -51,10 +57,12 @@ class AuthService {
     }
 
     final userRow = result.rows.first.assoc();
-    final storedHash = userRow['password_hash']!;
+    final String storedHash = userRow['password_hash']!;
 
-    // 2. Vérifier le mot de passe
-    if (!bcrypt.checkSync(password, storedHash)) {
+    // 2. Vérifier le mot de passe avec Argon2
+    final verified = _argon2Hasher.verify(password, storedHash); 
+    
+    if (!verified) {
       throw 'Email ou mot de passe invalide.';
     }
 

@@ -1,0 +1,32 @@
+name: dhash_frontend
+description: "Application e-commerce DHASH construite avec Flutter."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  # Doit correspondre à votre version Dart compatible avec Flutter
+  sdk: '>=3.0.0 <4.0.0' 
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Communication et Stockage Sécurisé
+  http: ^1.2.1               # Pour les appels à l'API (POST, GET, PUT, DELETE)
+  shared_preferences: ^2.2.3 # Pour le stockage local du jeton JWT
+  
+  # Base de Données Locale (SQLite)
+  sqflite: ^2.3.3            # Package SQLite (pour le Frontend)
+  path: ^1.9.0               # Utile pour la gestion des chemins de la base de données SQLite
+
+  # Widgets et Icônes standards
+  cupertino_icons: ^1.0.8    
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  
+flutter:
+  uses-material-design: true

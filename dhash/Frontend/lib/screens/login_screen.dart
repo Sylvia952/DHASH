@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import '../services/auth_service.dart'; // Assurez-vous d'avoir ce fichier
-import 'home_screen.dart'; // Écran de redirection après connexion
+// Utiliser le nom de package du Frontend (dhash_frontend)
+import 'package:dhash_frontend/services/auth_api_service.dart'; 
+import 'package:dhash_frontend/screens/home_screen.dart'; 
+import 'package:dhash_frontend/screens/register_screen.dart'; // NOUVEAU
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,11 +14,18 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final AuthService _authService = AuthService();
+  // Utiliser le AuthApiService défini précédemment
+  final AuthApiService _authService = AuthApiService(); 
   bool _isLoading = false;
   String? _errorMessage;
 
   void _handleLogin() async {
+    // Ajout d'une simple validation de formulaire
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      setState(() => _errorMessage = 'Veuillez remplir tous les champs.');
+      return;
+    }
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -24,9 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       // 1. Appel de l'API Backend via le service
-      await _authService.login(
-        _emailController.text,
-        _passwordController.text,
+      await _authService.loginUser( // Appel correct de la méthode du service
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
       );
 
       // 2. Navigation réussie (Le token est stocké dans shared_preferences)
@@ -38,9 +47,11 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       // 3. Gestion des erreurs de l'API
       setState(() {
-        _errorMessage = e.toString().contains('Email ou mot de passe invalide')
+        // Nettoyage du message d'erreur pour un affichage plus convivial
+        String errorMsg = e.toString().replaceFirst('Exception: ', '');
+        _errorMessage = errorMsg.contains('Vérifiez vos identifiants')
             ? 'Email ou mot de passe incorrect.'
-            : 'Erreur: ${e.toString()}';
+            : errorMsg;
       });
     } finally {
       setState(() {
@@ -58,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Logo DHASH (À implémenter)
+            // ... (Restant du Widget build, inchangé) ...
             const Text('DHASH', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
             const SizedBox(height: 40),
 
@@ -91,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 16),
             
-            // Lien 'Mot de passe oublié' (Fonctionnalité prévue)
+            // Lien 'Mot de passe oublié'
             TextButton(
               onPressed: () {
                 // TODO: Naviguer vers ResetPasswordScreen
@@ -99,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: const Text('Mot de passe oublié ?'),
             ),
 
-            // Lien vers l'inscription
+            // Lien vers l'inscription (Utilise le RegisterScreen créé ci-dessous)
             TextButton(
               onPressed: () {
                 Navigator.of(context).pushReplacement(
@@ -112,14 +123,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-}
-
-// Fichier temporaire pour éviter les erreurs de navigation
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: const Text('DHASH Home')), body: const Center(child: Text('Bienvenue sur DHASH !')));
   }
 }

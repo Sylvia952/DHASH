@@ -4,11 +4,13 @@ import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart'; // NÉCESSAIRE pour Router()
 import 'package:dotenv/dotenv.dart';
 
-// Importations des composants du Backend
-import 'package:dhash_api_dart/routes/auth_routes.dart'; // Routes d'authentification
-import 'package:dhash_api_dart/routes/product_routes.dart'; // Routes des produits (Nouveau)
-import 'package:dhash_api_dart/config/db_connection.dart'; // Connexion MySQL
-import 'package:dhash_api_dart/middleware/auth_middleware.dart'; // 🔐 Middleware JWT (Nouveau)
+// Importations des composants du Backend (CORRECTION ICI)
+import 'package:dhash_backend/routes/stock_routes.dart'; // <-- CORRIGÉ
+import 'package:dhash_backend/routes/cart_routes.dart';  // <-- CORRIGÉ
+import 'package:dhash_backend/routes/auth_routes.dart'; // Routes d'authentification <-- CORRIGÉ
+import 'package:dhash_backend/routes/product_routes.dart'; // Routes des produits (Nouveau) <-- CORRIGÉ
+import 'package:dhash_backend/config/db_connection.dart'; // Connexion MySQL <-- CORRIGÉ
+import 'package:dhash_backend/middleware/auth_middleware.dart'; // 🔐 Middleware JWT (Nouveau) <-- CORRIGÉ
 
 void main(List<String> args) async {
   // 1. Charger les variables d'environnement (.env)
@@ -34,10 +36,10 @@ void main(List<String> args) async {
 
   // Pipeline global pour toutes les requêtes
   final handler = Pipeline()
-      .addMiddleware(logRequests())     // 1. Logging des requêtes
+      .addMiddleware(logRequests())      // 1. Logging des requêtes
       .addMiddleware(_jsonContentType()) // 2. S'assurer que les réponses sont en JSON
-      .addMiddleware(checkAuth())        // 🔐 3. VÉRIFICATION JWT POUR TOUTES LES REQUÊTES
-      .addHandler(routerHandler);       // 4. Le routeur principal
+      .addMiddleware(checkAuth())         // 🔐 3. VÉRIFICATION JWT POUR TOUTES LES REQUÊTES
+      .addHandler(routerHandler);        // 4. Le routeur principal
 
   // 4. Démarrer le serveur
   final server = await serve(handler, InternetAddress.anyIPv4, port);
@@ -45,7 +47,6 @@ void main(List<String> args) async {
 }
 
 // Middleware pour forcer Content-Type: application/json
-// (Fonction inchangée)
 Middleware _jsonContentType() {
   return (Handler innerHandler) {
     return (Request request) async {
@@ -60,7 +61,6 @@ Middleware _jsonContentType() {
 }
 
 // Middleware utilitaire pour le logging des requêtes
-// (Fonction inchangée)
 Middleware logRequests() => (Handler innerHandler) {
   return (Request request) async {
     final watch = Stopwatch()..start();
